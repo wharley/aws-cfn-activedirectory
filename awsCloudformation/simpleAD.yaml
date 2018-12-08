@@ -1,13 +1,42 @@
-home:
-  Type: AWS::DirectoryService::SimpleAD
-  Properties:
-    Name: "corp.example.com"
-    Password:
-      Ref: SimpleADPW
-    Size: "Small"
-    VpcSettings:
-      SubnetIds:
-        - Ref: subnetID1
-        - Ref: subnetID2
-      VpcId:
-        Ref: vpcID
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Simple AD Service deployed through Cloudformation'
+
+Parameters:
+  SimpleADPW:
+    Type: 'String'
+  subnetID1:
+    Description: 'Subnet ID to provision instance'
+    Type: 'AWS::EC2::Subnet::Id'
+  subnetID2:
+    Description: 'Subnet ID to provision instance'
+    Type: 'AWS::EC2::Subnet::Id'
+  VPC:
+    Description: 'The VPC to deploy resources into'
+    Type: 'AWS::EC2::Subnet::Id'
+  DirectoryName:
+    Description: 'Unique Name for Directory'
+    Type: 'String'
+  ADSize:
+    Description: 'Ad Directory Size'
+    Type: 'String'
+    AllowedValues: [
+      'Small',
+      'Large'
+    ]
+
+Resources:
+  myDirectory:
+    Type: AWS::DirectoryService::SimpleAD
+    Properties:
+      Name:
+        Ref: 'DirectoryName'
+      Password:
+        Ref: 'SimpleADPW'
+      VpcSettings:
+        SubnetIds:
+          Ref: 'subnetID1'
+          Ref: 'subnetID2'
+        VpcId:
+          Ref: 'VPC'
+        Size:
+          Ref: 'ADSize'
