@@ -11,7 +11,7 @@ Obs.: Pip is tool for installing Python packages.
 # Create a file with yaml extension
 ## Struncture of the file
 example.yaml
-```
+```yaml
   AWSTemplateFormatVersion: "version date"
   Description:
     String
