@@ -75,3 +75,9 @@ example.yaml
 **Outputs (optional)**
 
   _Describes the values that are returned whenever you view your stack's properties. For example, you can declare an output for an S3 bucket name and then call the aws cloudformation describe-stacks AWS CLI command to view the name._
+
+# Deploy to the AWS
+
+```bash
+aws cloudformation deploy --template-file /path_to_yaml/file.yaml --stack-name my-new-stack
+```
