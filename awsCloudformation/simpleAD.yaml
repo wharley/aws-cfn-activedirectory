@@ -4,18 +4,23 @@ Description: 'Simple AD Service deployed through Cloudformation'
 Parameters:
   SimpleADPW:
     Type: 'String'
+    Default: ''
   subnetID1:
     Description: 'Subnet ID to provision instance'
     Type: 'AWS::EC2::Subnet::Id'
+    Default: ''
   subnetID2:
     Description: 'Subnet ID to provision instance'
     Type: 'AWS::EC2::Subnet::Id'
+    Default: ''
   VPC:
     Description: 'The VPC to deploy resources into'
     Type: 'AWS::EC2::Subnet::Id'
+    Default: ''
   DirectoryName:
     Description: 'Unique Name for Directory'
     Type: 'String'
+    Default: ''
   ADSize:
     Description: 'Ad Directory Size'
     Type: 'String'
@@ -23,6 +28,7 @@ Parameters:
       'Small',
       'Large'
     ]
+    Default: 'Small'
 
 Resources:
   myDirectory:
@@ -34,8 +40,8 @@ Resources:
         Ref: 'SimpleADPW'
       VpcSettings:
         SubnetIds:
-          Ref: 'subnetID1'
-          Ref: 'subnetID2'
+          - Ref: 'subnetID1'
+          - Ref: 'subnetID2'
         VpcId:
           Ref: 'VPC'
         Size:
