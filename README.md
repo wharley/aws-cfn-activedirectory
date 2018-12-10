@@ -76,8 +76,24 @@ example.yaml
 
   _Describes the values that are returned whenever you view your stack's properties. For example, you can declare an output for an S3 bucket name and then call the aws cloudformation describe-stacks AWS CLI command to view the name._
 
+# Subnet / VPC
+
+_To set the default, I searched for the subnet corresponding to the availability zone (AZ)_
+
+# Regions
+
+*AWS::DirectoryService::SimpleAD* works only for some regions
+
 # Deploy to the AWS
 
 ```bash
-aws cloudformation deploy --template-file /path_to_yaml/file.yaml --stack-name my-new-stack
+aws --region us-east-1 cloudformation deploy --template-file /path_to_yaml/file.yaml --stack-name my-new-stack
 ```
+
+# Delete from AWS
+
+```bash
+aws --region us-east-1 cloudformation delete-stack --stack-name simpleAD-new-stack
+```
+
+> _**Note:**_ _I chose the region **us-east-1**_
