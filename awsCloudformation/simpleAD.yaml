@@ -4,19 +4,16 @@ Description: 'Simple AD Service deployed through Cloudformation'
 Parameters:
   SimpleADPW:
     Type: 'String'
-    Default: 'testes@123#765%^faoof'
+    Default: ''
   subnetID1:
     Description: 'Subnet ID to provision instance'
     Type: 'AWS::EC2::Subnet::Id'
-    Default: subnet-36c15e51
   subnetID2:
     Description: 'Subnet ID to provision instance'
     Type: 'AWS::EC2::Subnet::Id'
-    Default: subnet-2226772d
   VPC:
     Description: 'The VPC to deploy resources into'
     Type: 'AWS::EC2::VPC::Id'
-    Default: vpc-993098e3
   DirectoryName:
     Description: 'Unique Name for Directory'
     Type: 'String'
