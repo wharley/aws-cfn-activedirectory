@@ -87,7 +87,7 @@ _To set the default, I searched for the subnet corresponding to the availability
 # Deploy to the AWS
 
 ```bash
-aws --region us-east-1 cloudformation deploy --template-file /path_to_yaml/file.yaml --stack-name my-new-stack
+aws --region us-east-1 cloudformation deploy --template-file /path_to_yaml/file.yaml --stack-name my-new-stack --parameter-overrides SimpleADPW=password subnetID1=subnet-a0246dcd subnetID2=subnet-a0246dcd VPC=vpc-0343606e
 ```
 
 # Delete from AWS
