@@ -88,51 +88,51 @@ Resources:
               content:
                 Fn::Join:
                   - ''
-                  - '[main]\n'
-                  - stack=
-                  - Ref: AWS::StackId
-                  - '\n'
-                  - region=
-                  - Ref: AWS::Region
-                  - '\n'
+                  - - '[main]\n'
+                    - stack=
+                    - Ref: AWS::StackId
+                    - '\n'
+                    - region=
+                    - Ref: AWS::Region
+                    - '\n'
             c:\\cfn\\hooks.d\\cfn-auto-reloader.conf:
               content:
                 Fn::Join:
                   - ''
-                  - '[cfn-auto-reloader-hook]\n'
-                  - 'triggers=post.update\n'
-                  - 'path=Resources.WindowsServer.Metadata.AWS::CloudFormation::Init\n'
-                  - 'action=cfn-init.exe -v -s '
-                  - Ref: AWS::StackId
-                  - ' -r WindowsServer'
-                  - ' --region '
-                  - Ref: AWS::Region
-                  - '\n'
+                  - - '[cfn-auto-reloader-hook]\n'
+                    - 'triggers=post.update\n'
+                    - 'path=Resources.WindowsServer.Metadata.AWS::CloudFormation::Init\n'
+                    - 'action=cfn-init.exe -v -s '
+                    - Ref: AWS::StackId
+                    - ' -r WindowsServer'
+                    - ' --region '
+                    - Ref: AWS::Region
+                    - '\n'
 
           commands:
             1-install-roles:
               command:
                 Fn::Join:
                   - ''
-                  - 'if not \"None\" EQU \"'
-                  - Ref: Roles
-                  - '\" (servermanagercmd -install '
-                  - Ref: Roles
-                  - ' -restart)'
-              3-signal-success:
-                command:
-                  Fn::Join:
-                    - ''
-                    - 'cfn-signal.exe -e %ERRORLEVEL% \"'
+                  - - 'if not \"None\" EQU \"'
+                    - !Ref Roles
+                    - '\" (servermanagercmd -install '
+                    - !Ref: Roles
+                    - ' -restart)'
+            2-signal-success:
+              command:
+                Fn::Join:
+                  - ''
+                  - - 'cfn-signal.exe -e %ERRORLEVEL% \"'
                     - Fn::Base64:
-                      Ref: WindowsServerWaitHandle
+                    - Ref: WindowsServerWaitHandle
                     - '\"'
 
           services:
             windows:
               cfn-hup:
-                enabled: 'true',
-                ensureRunning: 'true',
+                enabled: 'true'
+                ensureRunning: 'true'
                   files:
                     - c:\\cfn\\cfn-hup.conf
                     - c:\\cfn\\hooks.d\\cfn-auto-reloader.conf
@@ -142,9 +142,9 @@ Resources:
         Ref: InstanceType
       ImageId:
         Fn::FindInMap:
-        - AWSRegion2AMI
-        - Ref: AWS::Region
-        - Windows2008r2
+          - AWSRegion2AMI
+          - Ref: AWS::Region
+          - Windows2008r2
       SecurityGroups:
         Ref: InstanceSecurityGroup
       KeyName:
@@ -153,14 +153,14 @@ Resources:
         Fn::Base64:
           Fn::Join:
             - ''
-            - '<script>\n'
-            - 'cfn-init.exe -v -s '
-            - Ref: AWS::StackId
-            - ' -r WindowsServer'
-            - ' --region '
-            - Ref: AWS::Region
-            - '\n'
-            - '</script>'
+            - - '<script>\n'
+              - 'cfn-init.exe -v -s '
+              - Ref: AWS::StackId
+              - ' -r WindowsServer'
+              - ' --region '
+              - Ref: AWS::Region
+              - '\n'
+              - '</script>'
 
     WindowsServerWaitHandle:
       Type: AWS::CloudFormation::WaitConditionHandle
@@ -175,6 +175,5 @@ Resources:
 
 Outputs:
   RolesEnabled:
-    Value:
-      Ref: Roles
-      Description: 'Roles enabled on this instance.'
+    Value: !Ref Roles
+    Description: 'Roles enabled on this instance.'
