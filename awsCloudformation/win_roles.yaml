@@ -28,43 +28,46 @@ Parameters:
 
   SourceCidrForRDP:
     Description: 'IP Cidr from which you are likely to RDP into the instances. You can add rules later by modifying the created security groups e.g. 54.32.98.160/32'
-    Type: 'String'
+    Type: String
     MinLength: '9'
     MaxLength: '18'
-    AllowedPattern: '^([0-9]+\\.){3}[0-9]+\\/[0-9]+$'
+    AllowedPattern: '^([0-9]+\.){3}[0-9]+\/[0-9]+$'
+    Default: 0.0.0.0/0
 
 Mappings:
   AWSRegion2AMI:
-    us-east-1:
-      Windows2008r2: ami-2debb748
-      Windows2012r2: ami-1df0ac78
-    us-west-2:
-      Windows2008r2: ami-defe1ced
-      Windows2012r2: ami-f8f715cb
-    us-west-1:
-      Windows2008r2: ami-93ff3cd7
-      Windows2012r2: ami-91f93ad5
-    eu-west-1:
-      Windows2008r2: ami-b7c0ffc0
-      Windows2012r2: ami-2fcbf458
-    eu-central-1:
-      Windows2008r2: ami-eef6faf3
-      Windows2012r2: ami-f2f5f9ef
+    AMI:
+      WS2016FULLBASE: Windows_Server-2016-English-Full-Base-2018.10.14
     ap-northeast-1:
-      Windows2008r2: ami-56ef8256
-      Windows2012r2: ami-3e93fe3e
+      WS2016FULLBASE: ami-0134dae8964ea643c
+    ap-northeast-2:
+      WS2016FULLBASE: ami-0c6a4d561b38c05ed
+    ap-south-1:
+      WS2016FULLBASE: ami-0e9c4931f7c9d73f6
     ap-southeast-1:
-      Windows2008r2: ami-a8ecfffa
-      Windows2012r2: ami-faedfea8
+      WS2016FULLBASE: ami-098731bcd06ea9ca6
     ap-southeast-2:
-      Windows2008r2: ami-2dd89217
-      Windows2012r2: ami-7bda9041
+      WS2016FULLBASE: ami-0096a7a7add65af89
+    ca-central-1:
+      WS2016FULLBASE: ami-04a4290c9c20574d9
+    eu-central-1:
+      WS2016FULLBASE: ami-06af8c775c56b30ca
+    eu-west-1:
+      WS2016FULLBASE: ami-0cd8a780065ea078f
+    eu-west-2:
+      WS2016FULLBASE: ami-0f5f78829606035fc
+    eu-west-3:
+      WS2016FULLBASE: ami-0152e5e7567b014fc
     sa-east-1:
-      Windows2008r2: ami-729a221e
-      Windows2012r2: ami-02952d6e
-    cn-north-1:
-      Windows2008r2: ami-4a128e73
-      Windows2012r2: ami-2e128e17
+      WS2016FULLBASE: ami-0c3faf6ff12a7f005
+    us-east-1:
+      WS2016FULLBASE: ami-050202fb72f001b47
+    us-east-2:
+      WS2016FULLBASE: ami-028779930ada5200c
+    us-west-1:
+      WS2016FULLBASE: ami-08838e38cfe4854ad
+    us-west-2:
+      WS2016FULLBASE: ami-017bf00eb0d4c7182
 
 Resources:
   InstanceSecurityGroup:
@@ -75,8 +78,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: '3389'
           ToPort: '3389'
-          CidrIp:
-            Ref: SourceCidrForRDP
+          CidrIp: !Ref SourceCidrForRDP
 
   WindowsServer:
     Type: AWS::EC2::Instance
@@ -117,15 +119,14 @@ Resources:
                   - - 'if not \"None\" EQU \"'
                     - !Ref Roles
                     - '\" (servermanagercmd -install '
-                    - !Ref: Roles
+                    - !Ref Roles
                     - ' -restart)'
-            2-signal-success:
+            3-signal-success:
               command:
                 Fn::Join:
                   - ''
                   - - 'cfn-signal.exe -e %ERRORLEVEL% \"'
-                    - Fn::Base64:
-                    - Ref: WindowsServerWaitHandle
+                    - Fn::Base64: WindowsServerWaitHandle
                     - '\"'
 
           services:
@@ -133,9 +134,9 @@ Resources:
               cfn-hup:
                 enabled: 'true'
                 ensureRunning: 'true'
-                  files:
-                    - c:\\cfn\\cfn-hup.conf
-                    - c:\\cfn\\hooks.d\\cfn-auto-reloader.conf
+                files:
+                  - c:\\cfn\\cfn-hup.conf
+                  - c:\\cfn\\hooks.d\\cfn-auto-reloader.conf
 
     Properties:
       InstanceType:
@@ -144,9 +145,9 @@ Resources:
         Fn::FindInMap:
           - AWSRegion2AMI
           - Ref: AWS::Region
-          - Windows2008r2
+          - WS2016FULLBASE
       SecurityGroups:
-        Ref: InstanceSecurityGroup
+        - !Ref InstanceSecurityGroup
       KeyName:
         Ref: KeyName
       UserData:
@@ -162,16 +163,16 @@ Resources:
               - '\n'
               - '</script>'
 
-    WindowsServerWaitHandle:
-      Type: AWS::CloudFormation::WaitConditionHandle
+  WindowsServerWaitHandle:
+    Type: AWS::CloudFormation::WaitConditionHandle
 
-    WindowsServerWaitCondition:
-      Type: AWS::CloudFormation::WaitCondition
-      DependsOn: WindowsServer
-      Properties:
-        Handle:
-          Ref: WindowsServerWaitHandle
-        Timeout: '1800'
+  WindowsServerWaitCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    DependsOn: WindowsServer
+    Properties:
+      Handle:
+        Ref: WindowsServerWaitHandle
+      Timeout: '1800'
 
 Outputs:
   RolesEnabled:
