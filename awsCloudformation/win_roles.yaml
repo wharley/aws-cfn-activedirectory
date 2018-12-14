@@ -121,13 +121,13 @@ Resources:
                     - '\" (servermanagercmd -install '
                     - !Ref Roles
                     - ' -restart)'
-            3-signal-success:
+            2-signal-success:
               command:
                 Fn::Join:
                   - ''
                   - - 'cfn-signal.exe -e %ERRORLEVEL% \"'
                     - Fn::Base64: WindowsServerWaitHandle
-                    - '\"'
+                    - '\n"'
 
           services:
             windows:
@@ -172,7 +172,7 @@ Resources:
     Properties:
       Handle:
         Ref: WindowsServerWaitHandle
-      Timeout: '1800'
+      Timeout: '1000'
 
 Outputs:
   RolesEnabled:
