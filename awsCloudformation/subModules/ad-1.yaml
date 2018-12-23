@@ -4,9 +4,7 @@ Description: This template creates 2 Windows 2016 Active Directory Domain Contro
   Administrator password will be the one retrieved from the instance.  For adding
   members to the domain, ensure that they are launched into the domain member security
   group created by this template and then configure them to use the AD instances fixed
-  private IP addresses as the DNS server. **WARNING** This template creates Amazon
-  EC2 Windows instance and related resources. You will be billed for the AWS resources
-  used if you create a stack from this template. QS(0001)
+  private IP addresses as the DNS server.
 Metadata:
 # Cloudformation Interface Section influences how parameters are displayed in the Web UI
   AWS::CloudFormation::Interface:
@@ -841,10 +839,10 @@ Resources:
   DomainController2:
     Type: AWS::EC2::Instance
     DependsOn: DomainController1
-    CreationPolicy:
-      ResourceSignal:
-        Timeout: PT60M
-        Count: 1
+    # CreationPolicy:
+    #   ResourceSignal:
+    #     Timeout: PT60M
+    #     Count: 1
     Properties:
       ImageId: !Ref 'WS2016FULLBASE'
       IamInstanceProfile: !Ref 'ADServerProfile'

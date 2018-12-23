@@ -1,9 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: This template is intended to be installed into an existing VPC with two
   public subnets and an Active Directory domain. It will create an auto-scaling group
-  of RD Gateway instances in the public VPC subnets. **WARNING** This template creates
-  Amazon EC2 Windows instance and related resources. You will be billed for the AWS
-  resources used if you create a stack from this template. QS(0006)
+  of RD Gateway instances in the public VPC subnets.
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -149,9 +147,10 @@ Parameters:
   RDGWInstanceType:
     Description: Amazon EC2 instance type for the Remote Desktop Gateway instances
     Type: String
-    Default: t2.large
+    Default: t2.small
     AllowedValues:
     - t2.large
+    - t2.small
     - m3.large
     - m3.xlarge
     - m3.2xlarge
@@ -301,11 +300,11 @@ Resources:
       - Key: Name
         Value: RDGW
         PropagateAtLaunch: 'true'
-    CreationPolicy:
-      ResourceSignal:
-        Count:
-          Ref: NumberOfRDGWHosts
-        Timeout: PT30M
+    # CreationPolicy:
+    #   ResourceSignal:
+    #     Count:
+    #       Ref: NumberOfRDGWHosts
+    #     Timeout: PT30M
   RDGWLaunchConfiguration:
     Type: AWS::AutoScaling::LaunchConfiguration
     Metadata:
